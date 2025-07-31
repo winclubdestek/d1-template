@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinClub Admin Panel</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: rgba(26, 26, 26, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-header h1 {
+            color: #FFD700;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .admin-header p {
+            color: #ccc;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #FFD700;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .admin-panel {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .panel-header {
+            background: rgba(26, 26, 26, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .panel-header h1 {
+            color: #FFD700;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .panel-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-btn.active,
+        .tab-btn:hover {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(26, 26, 26, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #FFD700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-card input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 5px;
+            color: #fff;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .sites-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .site-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .site-item h3 {
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
+
+        .site-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .site-fields input {
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 5px;
+            color: #fff;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-weight: 600;
+        }
+
+        .success-msg {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid #28a745;
+            display: none;
+        }
+
+        .add-site-section,
+        .add-bonus-section {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .add-site-section h3,
+        .add-bonus-section h3 {
+            color: #FFD700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .site-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .site-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #FFD700;
+            padding: 5px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .delete-btn {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .delete-btn:hover {
+            background: rgba(220, 53, 69, 0.3);
+        }
+
+        .site-item h3 {
+            color: #FFD700;
+            margin-bottom: 15px;
+            padding-right: 120px;
+        }
+
+        .site-style-section {
+            background: rgba(255, 165, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .color-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-input input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .panel-tabs {
+                flex-direction: column;
+            }
+            
+            .site-fields {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <div class="admin-header">
+                <h1><i class="fas fa-crown"></i> WinClub</h1>
+                <p>Admin Panel Girişi</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Kullanıcı Adı:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Şifre:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Çıkış
+        </button>
+
+        <div class="panel-header">
+            <h1><i class="fas fa-tachometer-alt"></i> WinClub Admin Panel</h1>
+            <p>Website içeriğini yönetin ve güncelleyin</p>
+            <div style="margin-top: 15px;">
+                <button class="save-btn" onclick="resetAllData()" style="background: linear-gradient(135deg, #dc3545, #c82333);">
+                    <i class="fas fa-refresh"></i> Tüm Veriyi Sıfırla
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-tabs">
+            <button class="tab-btn active" onclick="showTab('stats')">
+                <i class="fas fa-chart-bar"></i> İstatistikler
+            </button>
+            <button class="tab-btn" onclick="showTab('sites')">
+                <i class="fas fa-globe"></i> Siteler
+            </button>
+            <button class="tab-btn" onclick="showTab('bonuses')">
+                <i class="fas fa-gift"></i> Bonuslar
+            </button>
+            <button class="tab-btn" onclick="showTab('styles')">
+                <i class="fas fa-palette"></i> Stil Ayarları
+            </button>
+            <button class="tab-btn" onclick="showTab('social')">
+                <i class="fas fa-share-alt"></i> Sosyal Medya
+            </button>
+        </div>
+
+        <!-- İstatistikler Tab -->
+        <div class="tab-content active" id="stats">
+            <h2><i class="fas fa-chart-line"></i> Hero Bölgesi İstatistikleri</h2>
+            <div class="success-msg" id="statsSuccess">İstatistikler başarıyla güncellendi!</div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Güvenilir Site Sayısı</h3>
+                    <input type="text" id="siteCount" value="5 +" placeholder="Örn: 5 +">
+                </div>
+                <div class="stat-card">
+                    <h3>Ödenen Çekim Miktarı</h3>
+                    <input type="text" id="payoutAmount" value="₺11M+" placeholder="Örn: ₺11M+">
+                </div>
+                <div class="stat-card">
+                    <h3>Mutlu Üye Sayısı</h3>
+                    <input type="text" id="memberCount" value="12.000+" placeholder="Örn: 12.000+">
+                </div>
+            </div>
+            <button class="save-btn" onclick="updateStats()">
+                <i class="fas fa-save"></i> İstatistikleri Güncelle
+            </button>
+        </div>
+
+        <!-- Siteler Tab -->
+        <div class="tab-content" id="sites">
+            <h2><i class="fas fa-globe"></i> Site Yönetimi</h2>
+            <div class="success-msg" id="sitesSuccess">Site bilgileri başarıyla güncellendi!</div>
+            
+            <div class="add-site-section">
+                <h3><i class="fas fa-plus"></i> Yeni Site Ekle</h3>
+                <div class="site-fields">
+                    <input type="text" id="new_site_name" placeholder="Site Adı (örn: Betboo)">
+                    <input type="text" id="new_site_badge" placeholder="Rozet (örn: VIP, POPULER)">
+                    <input type="text" id="new_site_icon" placeholder="İkon (örn: 💎, 🔥, ⚡)">
+                    <input type="text" id="new_site_link" placeholder="Affiliate Link">
+                    <input type="text" id="new_site_bonus" placeholder="Deneme Bonusu">
+                    <input type="text" id="new_site_feature1" placeholder="Özellik 1">
+                    <input type="text" id="new_site_feature2" placeholder="Özellik 2">
+                    <input type="text" id="new_site_logo" placeholder="Logo Dosya Adı (örn: betboo.png)">
+                </div>
+                <button class="save-btn" onclick="addNewSite()">
+                    <i class="fas fa-plus"></i> Site Ekle
+                </button>
+            </div>
+            
+            <div class="sites-list" id="sitesContainer">
+                <!-- Siteler buraya dinamik olarak yüklenecek -->
+            </div>
+            <button class="save-btn" onclick="updateSites()">
+                <i class="fas fa-save"></i> Site Bilgilerini Güncelle
+            </button>
+        </div>
+
+        <!-- Bonuslar Tab -->
+        <div class="tab-content" id="bonuses">
+            <h2><i class="fas fa-gift"></i> Bonus Yönetimi</h2>
+            <div class="success-msg" id="bonusSuccess">Bonus bilgileri başarıyla güncellendi!</div>
+            
+            <div class="add-bonus-section">
+                <h3><i class="fas fa-plus"></i> Yeni Bonus Ekle</h3>
+                <div class="site-fields">
+                    <input type="text" id="new_bonus_icon" placeholder="İkon (örn: 🎁, 🔄, ⭐)">
+                    <input type="text" id="new_bonus_title" placeholder="Bonus Başlığı">
+                    <input type="text" id="new_bonus_desc" placeholder="Açıklama">
+                    <input type="text" id="new_bonus_value" placeholder="Bonus Değeri">
+                    <input type="text" id="new_bonus_link" placeholder="Bonus Linki (örn: https://)">
+                </div>
+                <button class="save-btn" onclick="addNewBonus()">
+                    <i class="fas fa-plus"></i> Bonus Ekle
+                </button>
+            </div>
+            
+            <div class="sites-list" id="bonusContainer">
+                <!-- Bonuslar buraya dinamik olarak yüklenecek -->
+            </div>
+            <button class="save-btn" onclick="updateBonuses()">
+                <i class="fas fa-save"></i> Bonus Bilgilerini Güncelle
+            </button>
+        </div>
+
+        <!-- Stil Ayarları Tab -->
+        <div class="tab-content" id="styles">
+            <h2><i class="fas fa-palette"></i> Site Stil Ayarları</h2>
+            <div class="success-msg" id="styleSuccess">Stil ayarları başarıyla güncellendi!</div>
+            
+            <div class="site-style-section">
+                <h3><i class="fas fa-paint-brush"></i> Renk Ayarları</h3>
+                <div class="style-grid">
+                    <div class="color-input">
+                        <label>Ana Altın Rengi:</label>
+                        <input type="color" id="primaryGold" value="#FFD700">
+                        <input type="text" id="primaryGoldHex" value="#FFD700">
+                    </div>
+                    <div class="color-input">
+                        <label>Koyu Altın:</label>
+                        <input type="color" id="darkGold" value="#B8860B">
+                        <input type="text" id="darkGoldHex" value="#B8860B">
+                    </div>
+                    <div class="color-input">
+                        <label>Ana Siyah:</label>
+                        <input type="color" id="primaryBlack" value="#000000">
+                        <input type="text" id="primaryBlackHex" value="#000000">
+                    </div>
+                    <div class="color-input">
+                        <label>Koyu Gri:</label>
+                        <input type="color" id="darkGray" value="#1a1a1a">
+                        <input type="text" id="darkGrayHex" value="#1a1a1a">
+                    </div>
+                </div>
+            </div>
+
+            <div class="site-style-section">
+                <h3><i class="fas fa-font"></i> Tipografi Ayarları</h3>
+                <div class="style-grid">
+                    <div>
+                        <label>Ana Font:</label>
+                        <select id="primaryFont">
+                            <option value="Roboto">Roboto</option>
+                            <option value="Open Sans">Open Sans</option>
+                            <option value="Lato">Lato</option>
+                            <option value="Montserrat">Montserrat</option>
+                            <option value="Poppins">Poppins</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Başlık Font Boyutu:</label>
+                        <input type="range" id="titleSize" min="24" max="48" value="32">
+                        <span id="titleSizeValue">32px</span>
+                    </div>
+                    <div>
+                        <label>Metin Font Boyutu:</label>
+                        <input type="range" id="textSize" min="14" max="20" value="16">
+                        <span id="textSizeValue">16px</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="site-style-section">
+                <h3><i class="fas fa-magic"></i> Efekt Ayarları</h3>
+                <div class="style-grid">
+                    <div>
+                        <label>Animasyon Hızı:</label>
+                        <select id="animationSpeed">
+                            <option value="0.2s">Çok Hızlı (0.2s)</option>
+                            <option value="0.3s" selected>Normal (0.3s)</option>
+                            <option value="0.5s">Yavaş (0.5s)</option>
+                            <option value="0.8s">Çok Yavaş (0.8s)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Glow Efekti:</label>
+                        <input type="checkbox" id="glowEffect" checked>
+                    </div>
+                    <div>
+                        <label>Gradient Kullan:</label>
+                        <input type="checkbox" id="useGradient" checked>
+                    </div>
+                    <div>
+                        <label>Border Radius:</label>
+                        <input type="range" id="borderRadius" min="0" max="20" value="10">
+                        <span id="borderRadiusValue">10px</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="save-btn" onclick="updateStyles()">
+                <i class="fas fa-save"></i> Stil Ayarlarını Güncelle
+            </button>
+        </div>
+
+        <!-- Sosyal Medya Tab -->
+        <div class="tab-content" id="social">
+            <h2><i class="fas fa-share-alt"></i> Sosyal Medya Linkleri</h2>
+            <div class="success-msg" id="socialSuccess">Sosyal medya linkleri başarıyla güncellendi!</div>
+            
+            <div class="sites-list">
+                <div class="site-item">
+                    <h3><i class="fab fa-telegram"></i> Telegram Kanalı</h3>
+                    <div class="site-fields">
+                        <input type="text" id="telegram_channel" placeholder="Telegram Kanal Linki" value="https://t.me/winclubresmi">
+                        <input type="text" id="telegram_channel_text" placeholder="Görünecek Metin" value="Telegram Kanalımız">
+                    </div>
+                </div>
+
+                <div class="site-item">
+                    <h3><i class="fab fa-telegram"></i> Telegram Grup</h3>
+                    <div class="site-fields">
+                        <input type="text" id="telegram_group" placeholder="Telegram Grup Linki" value="https://t.me/winclubsohbet">
+                        <input type="text" id="telegram_group_text" placeholder="Görünecek Metin" value="Telegram Sohbet Grubumuz">
+                    </div>
+                </div>
+
+                <div class="site-item">
+                    <h3><i class="fab fa-instagram"></i> Instagram</h3>
+                    <div class="site-fields">
+                        <input type="text" id="instagram" placeholder="Instagram Linki" value="https://www.instagram.com/by.winclub/">
+                        <input type="text" id="instagram_text" placeholder="Görünecek Metin" value="Instagram Hesabımız">
+                    </div>
+                </div>
+
+                <div class="site-item">
+                    <h3><i class="fab fa-youtube"></i> YouTube</h3>
+                    <div class="site-fields">
+                        <input type="text" id="youtube" placeholder="YouTube Linki" value="https://www.youtube.com/@winclubyoutube">
+                        <input type="text" id="youtube_text" placeholder="Görünecek Metin" value="YouTube Kanalımız">
+                    </div>
+                </div>
+
+                <div class="site-item">
+                    <h3><i class="fab fa-kickstarter"></i> Kick</h3>
+                    <div class="site-fields">
+                        <input type="text" id="kick" placeholder="Kick Linki" value="https://kick.com/winclubkick">
+                        <input type="text" id="kick_text" placeholder="Görünecek Metin" value="Kick Hesabımız">
+                    </div>
+                </div>
+            </div>
+            <button class="save-btn" onclick="updateSocial()">
+                <i class="fas fa-save"></i> Sosyal Medya Linklerini Güncelle
+            </button>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
